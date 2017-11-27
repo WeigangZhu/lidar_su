@@ -20,7 +20,7 @@ int main()
 	sockfd = open_net();
     	
 	// load configure file
-    	loadConfigFile();
+    load_config_file();
 	
 	
 	//grid_cell_memory(grid_cell);
