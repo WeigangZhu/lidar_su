@@ -1,16 +1,15 @@
 
 #include "rawdata.h"
-#include <iostream>
 #include <math.h>
 
 
 float   VERT_ANGLE[16];
-float   aIntensityCal[1600][16];
+float   a_intensity_cal[1600][16];
 int     g_ChannelNum[16];
 unpack_point_t unpack_point;
 
 // 读参数文件 
-void loadConfigFile() 
+void load_config_file() 
 {
 
 	FILE *f_inten = fopen("./conf/curves.conf", "r");
@@ -19,7 +18,7 @@ void loadConfigFile()
 
 	if (!f_inten) 
 	{
-		std::cerr << "./conf/curves.conf does not exist";
+		printf("./conf/curves.conf does not exist\n");
 	} 
 	else 
 	{
@@ -38,7 +37,7 @@ void loadConfigFile()
 
 			for (loopj = 0; loopj < 16; loopj++) 
 			{
-				aIntensityCal[loopi - 1][loopj] = a[loopj];
+				 a_intensity_cal[loopi - 1][loopj] = a[loopj];
 			}
 		}
 		fclose(f_inten);
@@ -48,7 +47,7 @@ void loadConfigFile()
 	FILE *f_angle = fopen("./conf/angle.conf", "r");
 	if (!f_angle) 
 	{
-		std::cerr << "./conf/angle.conf does not exist";
+		printf( "./conf/angle.conf does not exist\n");
 
 	} 
 	else 
@@ -75,7 +74,7 @@ void loadConfigFile()
 	FILE *f_channel = fopen("./conf/channel.conf", "r");
 	if (!f_channel) 
 	{
-		std::cerr << "./conf/channel.conf does not exist";
+		printf("./conf/channel.conf does not exist");
 	} 
 	else 
 	{
@@ -93,7 +92,7 @@ void loadConfigFile()
 }
 
 //校准距离  
-float pixelToDistance(int pixelValue, int passageway) 
+float pixel_to_distance(int pixelValue, int passageway) 
 {
 	float DistanceValue;
 
@@ -110,7 +109,7 @@ float pixelToDistance(int pixelValue, int passageway)
 }
 
 //校准反射强度值
-float calibrateIntensity(float intensity, int calIdx, int distance) 
+float calibrate_intensity(float intensity, int calIdx, int distance) 
 {
 	int algDist;
 	int sDist;
@@ -137,7 +136,7 @@ float calibrateIntensity(float intensity, int calIdx, int distance)
 	//minus the static offset (this data is For the intensity cal useage only)
 	algDist = sDist - g_ChannelNum[calIdx];
 	//algDist = algDist < 1400? algDist : 1399;
-	refPwr = aIntensityCal[algDist][calIdx];
+	refPwr = a_intensity_cal[algDist][calIdx];
 	tempInten = refPwr / realPwr;
 	tempInten = tempInten * 200.0;
 	tempInten = (int) tempInten > 255 ? 255.0 : tempInten;
@@ -154,7 +153,6 @@ unpack_point_t* unpack(const raw_packet_t *raw)
 	float last_azimuth_diff;
 	float azimuth_corrected_f;
 	int azimuth_corrected;
-	//pack_sov_t pack_udp;
 		
 
 	for (int block = 0,point_pos = 0; block < BLOCKS_PER_PACKET; block++)	//1 packet:12 data blocks
@@ -212,11 +210,11 @@ unpack_point_t* unpack(const raw_packet_t *raw)
 
 				// read intensity
 				intensity = raw->blocks[block].data[k + 2];
-				intensity = calibrateIntensity(intensity, dsr, distance);
-				//pack_udp.intensity[block][firing][dsr] = intensity;
-				float dis = pixelToDistance(distance, dsr);
+				intensity = calibrate_intensity(intensity, dsr, distance);
+				
+				float dis = pixel_to_distance(distance, dsr);
 				dis = dis * DISTANCE_RESOLUTION;
-				//pack_udp.distance[block][firing][dsr] = dis;
+				
 
 				float arg_horiz = azimuth_corrected * ROTATION_RESOLUTION *PI / 180;
 				float arg_vert = VERT_ANGLE[dsr];

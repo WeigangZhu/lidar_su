@@ -9,6 +9,7 @@
 #define _RAWDATA_H
 
 #include <stdint.h>
+#include<stdio.h>
 
 #define PORT 9966
 #define PI 3.1415926535898 
@@ -95,13 +96,6 @@ typedef struct _point4
 	uint8_t intensity;
 } point4_t;
 	
-typedef struct _pack_sov
-{
-	float azimuth[BLOCKS_PER_PACKET];
-	float distance[BLOCKS_PER_PACKET][RS16_FIRINGS_PER_BLOCK][RS16_SCANS_PER_FIRING];
-	float intensity[BLOCKS_PER_PACKET][RS16_FIRINGS_PER_BLOCK][RS16_SCANS_PER_FIRING];
-} pack_sov_t;
-	
 typedef struct _unpack_point
 {
 		
@@ -115,16 +109,16 @@ extern float   aIntensityCal[1600][16];
 extern int     g_ChannelNum[16];
 
 /*load the cablibrated files: angle, distance, intensity*/
-void    loadConfigFile();
+void    load_config_file();
 
 /*unpack the UDP packet and opuput PointXYZI type*/
  unpack_point_t*  unpack(const raw_packet_t *raw);
 
 /*calibrated the disctance*/
-float   pixelToDistance(int pixelValue, int passageway);
+float   pixel_to_distance(int pixelValue, int passageway);
 
 /*calibrated the intensity*/
-float   calibrateIntensity(float inten,int calIdx,int distance);
+float   calibrate_intensity(float inten,int calIdx,int distance);
 
 //pack_point_t unpack_point;
 
