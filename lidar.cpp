@@ -3,8 +3,8 @@
 
 point_grid_t *grid_cell[GRID_MAX][GRID_MAX];
 
-FILE *fp1 = fopen("../../matlab/lidar_source001.txt","w");
-FILE *fp2 = fopen("../../matlab/lidar_intensity001.txt","w");
+FILE *fp1 = fopen("./lidar_source001.txt","w");
+FILE *fp2 = fopen("./lidar_intensity001.txt","w");
 //FILE *fp3 = fopen("../matlab/lidar_filter001.txt","w");
 
 int main()
@@ -42,8 +42,8 @@ int main()
 		//printf("num = %d\n",num);
 		//err_recvfrom(num);
 		
-		//data_unpack = unpack(raw);
-		//test_output( data_unpack,fp1,fp2 );
+		data_unpack = unpack(raw);
+		test_output( data_unpack,fp1,fp2 );
 
 		
 		//grid_on( data_unpack, grid_cell );
